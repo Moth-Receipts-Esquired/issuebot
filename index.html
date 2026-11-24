@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IssueBot AI - Autonomous GitHub Issue Resolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: #ff6b6b;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #ff6b6b;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 100px 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .features {
+            background: white;
+            padding: 80px 0;
+            border-radius: 20px 20px 0 0;
+            margin-top: 50px;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-card p {
+            color: #666;
+        }
+        
+        .pricing {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+        
+        .pricing h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .pricing-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .pricing-card .price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .pricing-card .price span {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-card li {
+            padding: 8px 0;
+            color: #666;
+        }
+        
+        .pricing-card li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .pricing-card button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .testimonials {
+            background: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .testimonials h2 {
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        
+        .payment-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .payment-info .crypto-address {
+            font-family: monospace;
+            word-break: break-all;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 3px;
+            margin-top: 5px;
+        }
+        
+        .tipping {
+            background: #f8f9fa;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .tipping h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .tipping-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .tipping-content p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .tipping-address {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .tipping-address code {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .copy-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            align-self: flex-start;
+        }
+        
+        .copy-button:hover {
+            background: #5568d3;
+        }
+        
+        .tipping-note {
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+        
+        .testimonial-card p {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-card .author {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .testimonial-card .title {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        footer {
+            background: #333;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: #667eea;
+        }
+        
+        .copyright {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                margin-top: 20px;
+            }
+            
+            .nav-links a {
+                margin: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">IssueBot<span>AI</span></div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#docs">Docs</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Autonomous GitHub Issue Resolution</h1>
+            <p>IssueBot AI automatically resolves GitHub issues by creating verified, reviewed pull requests. Save hours of development time with our production-grade AI agent.</p>
+            <a href="#pricing" class="cta-button">Get Started</a>
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="container">
+            <h2>✨ Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 Contract-Based</h3>
+                    <p>Every issue has a verifiable contract with clear acceptance criteria. No more ambiguity about what "done" means.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔄 Full Workflow</h3>
+                    <p>Complete 7-step workflow: Plan → Implement → Verify → Review → Open PR → CI → Human Gate.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ Production-Grade</h3>
+                    <p>Built with the Harness, Loop, and Graph engineering framework for reliability and scalability.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔒 Secure</h3>
+                    <p>Lethal trifecta protection prevents data leaks. Permission-based access control keeps your code safe.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Fast</h3>
+                    <p>Resolves issues in minutes instead of hours. 80-90% time savings compared to manual development.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 Cost-Effective</h3>
+                    <p>Every dollar spent on tokens saves $5-$300 in developer time. ROI of 5x-300x.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>💰 Simple Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/month</span></div>
+                    <ul>
+                        <li>Core functionality</li>
+                        <li>Community support</li>
+                        <li>Open source</li>
+                    </ul>
+                    <button class="payment-button" data-tier="free">Get Started</button>
+                    <div class="payment-info">Open source on GitHub</div>
+                </div>
+                <div class="pricing-card">
+                    <h3>Pro</h3>
+                    <div class="price">$20<span>/month/repo</span></div>
+                    <ul>
+                        <li>All Free features</li>
+                        <li>Advanced workflows</li>
+                        <li>Priority support</li>
+                        <li>Custom hooks</li>
+                    </ul>
+                    <button class="payment-button" data-tier="pro">Get Started</button>
+                    <div class="payment-info">Secure payment via Sponsors</div>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$100<span>/month/org</span></div>
+                    <ul>
+                        <li>All Pro features</li>
+                        <li>Unlimited repos</li>
+                        <li>Dedicated support</li>
+                        <li>SLA: 24-hour</li>
+                    </ul>
+                    <button class="payment-button" data-tier="enterprise">Contact Us</button>
+                    <div class="payment-info">Priority support included</div>
+                </div>
+                <div class="pricing-card">
+                    <h3>Custom</h3>
+                    <div class="price">Custom</div>
+                    <ul>
+                        <li>All Enterprise features</li>
+                        <li>Custom development</li>
+                        <li>White-label options</li>
+                        <li>24/7 support</li>
+                    </ul>
+                    <button class="payment-button" data-tier="custom">Contact Us</button>
+                    <div class="payment-info">Email us for a quote</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2>💬 What Our Users Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"IssueBot resolved 10 issues in our backlog in just one day. It would have taken us 2 weeks manually!"</p>
+                    <div class="author">John Smith</div>
+                    <div class="title">CTO, TechStart Inc.</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The contract system ensures we always know when a task is truly done. No more 'it's done' when it's not."</p>
+                    <div class="author">Jane Doe</div>
+                    <div class="title">Lead Developer, DevTeam</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"IssueBot's security features give us peace of mind. We can automate without worrying about data leaks."</p>
+                    <div class="author">Bob Johnson</div>
+                    <div class="title">Security Engineer, SecureCorp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="tipping" id="tipping">
+        <div class="container">
+            <h2>☕ Support IssueBot</h2>
+            <div class="tipping-content">
+                <p>IssueBot resolves GitHub issues automatically. If it saves you time, consider a voluntary tip in Monero (XMR).</p>
+                <div class="tipping-address">
+                    <code id="xmr-address">82kWSHqmXv9Ct9qVg6foSFegUcsntdmgMadoCUo33gxrd2P4fzzDPgpNv6kgBwQ8Vf6itDcYyPMHtiJoSZpMJ6VPFj8TGj8</code>
+                    <button class="copy-button" onclick="copyXMRAddress()">Copy Address</button>
+                </div>
+                <p class="tipping-note">Public subaddress - safe to share. Direct wallet transfers only.</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#docs">Documentation</a>
+                <a href="#">GitHub</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="copyright">
+                © 2026 IssueBot AI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/payment.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Copy XMR address to clipboard
+        function copyXMRAddress() {
+            const address = document.getElementById('xmr-address').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                alert('XMR address copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

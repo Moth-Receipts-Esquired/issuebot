@@ -1,0 +1,16 @@
+{
+  "payment_method": "github_sponsors",
+  "github_sponsors_url": "",
+  "stripe_url": "",
+  "paypal_url": "",
+  "crypto": {
+    "enabled": false,
+    "addresses": {
+      "BTC": "",
+      "ETH": "",
+      "USDC": ""
+    },
+    "network": "ERC20"
+  },
+  "custom_service_url": ""
+}
